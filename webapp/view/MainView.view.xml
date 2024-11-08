@@ -3,13 +3,58 @@
     xmlns:mvc="sap.ui.core.mvc"
     displayBlock="true"
     xmlns="sap.m"
+    xmlns:core="sap.ui.core"
 >
     <Page
         id="page"
         title="{i18n>title}"
     >
-        <content >
-            <Text id="text1" text="Hello Word"></Text>
+        <content>
+            <HBox id="box1">
+                <Label
+                    id="labelEmployee"
+                    labelFor="inputEmployee"
+                    text="{i18n>labelEmployee}"
+                    class="sapUiSmallMargin"
+                />
+                <Input
+                    id="inputEmployee"
+                    maxLength="6"
+                    width="200px"
+                    class="sapUiSmallMarginEnd"
+                    liveChange="onValidate"
+                />
+
+                <Label
+                    id="labelCountry"
+                    labelFor="slCountry"
+                    text="{i18n>labelCountry}"
+                    class="sapUiSmallMargin"
+                    visible="false"
+                />
+
+                <Select
+                    id="slCountry"
+                    forceSelection="false"
+                    visible="false"
+                >
+                    <core:Item
+                        id="us"
+                        key="US"
+                        text="{i18n>countryUS}"
+                    />
+                    <core:Item
+                        id="uk"
+                        key="UK"
+                        text="{i18n>countryUK}"
+                    />
+                    <core:Item
+                        id="es"
+                        key="ES"
+                        text="{i18n>countryES}"
+                    />
+                </Select>
+            </HBox>
         </content>
     </Page>
 </mvc:View>
