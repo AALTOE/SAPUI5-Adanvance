@@ -104,7 +104,7 @@
                             </Column>
                         </columns>
                         <items>
-                            <ColumnListItem id="list1">
+                            <ColumnListItem id="list1" type="Navigation" press="showPostalCode">
                                 <cells>
                                     <Label
                                         id="labelID"

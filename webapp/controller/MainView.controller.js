@@ -6,8 +6,8 @@ sap.ui.define([
     /**
      * 
      * @param {sap.ui.core.mvc.Controller} Controller 
-     * @param {sap.ui.Filter} Filter
-     * @param {sap.ui.FilterOperator} FilterOperator
+     * @param {sap.ui.model.Filter} Filter
+     * @param {sap.ui.model.FilterOperator} FilterOperator
      * @returns 
      */
     function (Controller, Filter, FilterOperator) {
@@ -144,10 +144,10 @@ sap.ui.define([
             //Se pasa los datos el objeto al modelo
             //oJSONModel.setData(oJSON);
             //Se cargan los datos desde un fichero
-            JSONModel.loadData("./localService/mockdata/Employees.json",false);
+            oJSONModel.loadData("./localService/mockdata/Employees.json",false);
             //Valida si se cargaron los modelos correctamente
-            /*oJSONModel.attachRequestComplete(function (oEventModel){
-                console.log(JSON.stringify.getData());
+            /*oJSONModel.attachRequestCompleted(function (oEventModel){
+                console.log(JSON.stringify(oJSONModel.getData()));
             })*/
             //Se vincula los datos a la vista
             oView.setModel(oJSONModel);
@@ -159,7 +159,7 @@ sap.ui.define([
             //Se crea un arreglo que contiene un filtro vacio
             var filters = [];
             //Bucle de biurfación IF, valindado si no esta vacio el EmployeeID
-            if(oJSON.EmployeeID !== ""){
+            if(oJSON.EmployeeId !== ""){
                 //Creamos un nuevo filtro donde buscar resultados comparando el EmployeeID
                 filters.push(new Filter("EmployeeID", FilterOperator.EQ, oJSON.EmployeeId));
             }
@@ -171,10 +171,25 @@ sap.ui.define([
             //Accdedemos a la tabla con todos sus elementos
             var oList = this.getView().byId("tableEmployee");
             //Obtenemos los items (Datos) de la tabla
-            var oBinding = oList.getbinding("items");
+            var oBinding = oList.getBinding("items");
             //Actualizamos la tabla con los resultados ya filtrados
             oBinding.filter(filters);
 
+
+        }
+
+        function onClearFilter (){
+            var oModel = this.getView().getModel();
+            oModel.setProperty("/EmployeeId", "");
+            oModel.setProperty("/CountryKey", "");
+        }
+
+        function showPostalCode (oEvent){
+            var itemPress = oEvent.getSource();
+            var oContext = itemPress.getBindingContext();
+            var oObjectContext = oContext.getObject();
+
+            sap.m.MessageToast.show(oObjectContext.PostalCode);
 
         }
 
@@ -200,6 +215,8 @@ sap.ui.define([
         };
 
         Main.prototype.onInit = onInit;
-        //Main.prototype.onInit = onFilter;
+        Main.prototype.onFilter = onFilter;
+        Main.prototype.onClearFilter = onClearFilter;
+        Main.prototype.showPostalCode = showPostalCode;
         return Main;
     });
