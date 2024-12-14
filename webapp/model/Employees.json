@@ -1,20 +1,4 @@
 {
-    "EmployeeId": "",
-    "CountryKey": "",
-    "ListCountry": [
-        {
-            "Key": "US",
-            "Text": "United States"
-        },
-        {
-            "Key": "UK",
-            "Text": "United Kindom"
-        },
-        {
-            "Key": "ES",
-            "Text": "Spain"
-        }
-    ],
     "Employees": [
         {
             "EmployeeID": "1",

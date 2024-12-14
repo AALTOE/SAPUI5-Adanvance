@@ -14,159 +14,44 @@ sap.ui.define([
         "use strict";
 
         function onInit() {
-            //Variable para crear la instancia o nuevo modelo con JSONModel
-            var oJSONModel = new sap.ui.model.json.JSONModel();
             //Variable para obtener la instancia de la vista
             var oView = this.getView();
-            //Variable para acceder al modelo del i18n
-            var i18nBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle();
-            //Creación del objeto JSON
-            var oJSON = {
-                EmployeeId: "",
-                CountryKey: "",
-                ListCountry: [
-                    {
-                        Key: "US",
-                        Text: "United States"
-                    },
-                    {
-                        Key: "UK",
-                        Text: "United Kindom"
-                    },
-                    {
-                        Key: "ES",
-                        Text: "Spain"
-                    }
-                ],
-                Employees: [
-                    {
-                        EmployeeID: "1",
-                        LastName: "García Lopez",
-                        FirstName: "María",
-                        Country: "ES",
-                        City: "Madrid",
-                        PostalCode: "28021",
-                        Orders: [
-                            {
-                                "OrderID": "208",
-                                "Freight": "65",
-                                "ShipAddress": "Calle Alcala"
-                            },
-                            {
-                                "OrderID": "2096",
-                                "Freight": "21",
-                                "ShipAddress": "Calle Mayor"
-                            }
-                        ]
-                    },
-                    {
-                        EmployeeID: "2",
-                        LastName: "Fernandez Díaz",
-                        FirstName: "Pedro",
-                        Country: "ES",
-                        City: "Granada",
-                        PostalCode: "18008",
-                        Orders: [
-                            {
-                                "OrderID": "1056",
-                                "Freight": "78",
-                                "ShipAddress": "Calle Alcala"
-                            },
-                            {
-                                "OrderID": "6731",
-                                "Freight": "90",
-                                "ShipAddress": "Calle Mayor"
-                            }
-                        ]
-                    },
-                    {
-                        EmployeeID: "3",
-                        LastName: "Davolio",
-                        FirstName: "Nancy",
-                        Country: "US",
-                        City: "Seattle",
-                        PostalCode: "98052",
-                        Orders: [
-                            {
-                                "OrderID": "789",
-                                "Freight": "34",
-                                "ShipAddress": "1029 - 12th Ave. S."
-                            },
-                            {
-                                "OrderID": "3057",
-                                "Freight": "12",
-                                "ShipAddress": "2732 Baker Blvd."
-                            }
-                        ]
-                    },
-                    {
-                        EmployeeID: "4",
-                        LastName: "Peacock",
-                        FirstName: "Margaret",
-                        Country: "US",
-                        City: "Redmond",
-                        PostalCode: "08025",
-                        Order: [
-                            {
-                                "OrderID": "100",
-                                "Freight": "83",
-                                "ShipAddress": "187 Suffolk Ln."
-                            },
-                            {
-                                "OrderID": "209",
-                                "Freight": "52",
-                                "ShipAddress": "87 Polk St. Suite 5"
-                            }
-                        ]
-                    },
-                    {
-                        EmployeeID: "5",
-                        LastName: "Buchanan",
-                        FirstName: "Steven",
-                        Country: "UK",
-                        City: "London",
-                        PostalCode: "67059",
-                        Orders: [
-                            {
-                                "OrderID": "10",
-                                "Freight": "57",
-                                "ShipAddress": "Brook Farm Stratford St. Mary"
-                            },
-                            {
-                                "OrderID": "2010",
-                                "Freight": "89",
-                                "ShipAddress": "Fauntleroy Circus"
-                            }
-                        ]
-                    }
-                ]
-            };
-            //Se pasa los datos el objeto al modelo
-            //oJSONModel.setData(oJSON);
+            //Variable para crear la instancia o nuevo modelo con JSONModel
+            var oJSONModelEmployees = new sap.ui.model.json.JSONModel();
             //Se cargan los datos desde un fichero
-            oJSONModel.loadData("./localService/mockdata/Employees.json",false);
-            //Valida si se cargaron los modelos correctamente
-            /*oJSONModel.attachRequestCompleted(function (oEventModel){
-                console.log(JSON.stringify(oJSONModel.getData()));
-            })*/
+            oJSONModelEmployees.loadData("./localService/mockdata/Employees.json", false);
             //Se vincula los datos a la vista
-            oView.setModel(oJSONModel);
-        }
+            oView.setModel(oJSONModelEmployees, "jsonEmployees");
+            //Creación del segundo modelo
+            var oJSONModelCountries = new sap.ui.model.json.JSONModel();
+            oJSONModelCountries.loadData("./localService/mockdata/Countries.json", false);
+            oView.setModel(oJSONModelCountries, "jsonCountries");
+            //Creación del tercer modelo para mostrar y ocultar datos
+            var oJSONModelConfig = new sap.ui.model.json.JSONModel({
+                visibleID: true,
+                visibleName: true,
+                visibleCountry: true,
+                visibleCity: false,
+                visibleBtnShowCity: true,
+                visibleBtnHideCity: false
+            });
+            oView.setModel(oJSONModelConfig, "jsonCounfig");
+        };
 
-        function onFilter(){
+        function onFilter() {
             //Obtenemos los datos del modelo
-            var oJSON = this.getView().getModel().getData();
+            var oJSONCountries = this.getView().getModel("jsonCountries").getData();
             //Se crea un arreglo que contiene un filtro vacio
             var filters = [];
             //Bucle de biurfación IF, valindado si no esta vacio el EmployeeID
-            if(oJSON.EmployeeId !== ""){
+            if (oJSONCountries.EmployeeId !== "") {
                 //Creamos un nuevo filtro donde buscar resultados comparando el EmployeeID
-                filters.push(new Filter("EmployeeID", FilterOperator.EQ, oJSON.EmployeeId));
+                filters.push(new Filter("EmployeeID", FilterOperator.EQ, oJSONCountries.EmployeeId));
             }
 
-            if(oJSON.CountryKey !== ""){
+            if (oJSONCountries.CountryKey !== "") {
                 //Creamos un nuevo filtro donde buscar resultados comparando el Contry
-                filters.push(new Filter("Country", FilterOperator.EQ, oJSON.CountryKey));
+                filters.push(new Filter("Country", FilterOperator.EQ, oJSONCountries.CountryKey));
             }
             //Accdedemos a la tabla con todos sus elementos
             var oList = this.getView().byId("tableEmployee");
@@ -176,21 +61,127 @@ sap.ui.define([
             oBinding.filter(filters);
 
 
-        }
+        };
 
-        function onClearFilter (){
-            var oModel = this.getView().getModel();
+        function onClearFilter() {
+            //Obtenemos los datos del modelo jsonCountries 
+            var oModel = this.getView().getModel("jsonCountries");
+            //Actualizamos el valor de los datos para limpiar el modelo
             oModel.setProperty("/EmployeeId", "");
             oModel.setProperty("/CountryKey", "");
-        }
+        };
 
-        function showPostalCode (oEvent){
+        function showPostalCode(oEvent) {
             var itemPress = oEvent.getSource();
-            var oContext = itemPress.getBindingContext();
+            var oContext = itemPress.getBindingContext("jsonEmployees");
             var oObjectContext = oContext.getObject();
 
             sap.m.MessageToast.show(oObjectContext.PostalCode);
 
+        };
+        /**
+         * Función que actualiza el modelo de configuración para mostrar la columna City
+         * y ocultar el boton de motrar
+         */
+        function onShowCity() {
+            var oJSONModelConfig = this.getView().getModel("jsonCounfig");
+            oJSONModelConfig.setProperty("/visibleCity", true);
+            oJSONModelConfig.setProperty("/visibleBtnShowCity", false);
+            oJSONModelConfig.setProperty("/visibleBtnHideCity", true);
+
+        };
+        /**
+         * Función que actualiza el modelo de configuración para ocultar la columna City
+         * y ocular el boton de ocultar
+         */
+        function onHideCity() {
+            var oJSONModelConfig = this.getView().getModel("jsonCounfig");
+            oJSONModelConfig.setProperty("/visibleCity", false);
+            oJSONModelConfig.setProperty("/visibleBtnShowCity", true);
+            oJSONModelConfig.setProperty("/visibleBtnHideCity", false);
+        };
+        /**
+         * Función que construye una tabla dinamica al precionar un regsitro y mostrando
+         * los datos del campo Orders
+         */
+        function showOrders (oEvent) {
+            var ordersTable = this.getView().byId("ordersTable");
+            ordersTable.destroyItems();
+
+            var itemPressed = oEvent.getSource();
+            var oContext = itemPressed.getBindingContext("jsonEmployees");
+            var oObjectContext = oContext.getObject();
+            var orders = oObjectContext.Orders;
+
+            var ordersItems = [];
+
+            for (var i in orders) {
+                ordersItems.push(new sap.m.ColumnListItem({
+                    cells : [
+                        new sap.m.Label({ text: orders[i].OrderID}),
+                        new sap.m.Label({ text: orders[i].Freight}),
+                        new sap.m.Label({ text: orders[i].ShipAddress})
+                    ]
+                }));
+            }
+
+            var newTable = new sap.m.Table({
+                width : "auto",
+                columns : [
+                    new sap.m.Column({header: new sap.m.Label({ text: "{i18n>orderID}"})}),
+                    new sap.m.Column({header: new sap.m.Label({ text: "{i18n>freight}"})}),
+                    new sap.m.Column({header: new sap.m.Label({ text: "{i18n>shipAddress}"})})
+                ],
+                items : ordersItems
+            }).addStyleClass("sapUiSmallMargin");
+
+            ordersTable.addItem(newTable);
+
+            var newTableJSON = new sap.m.Table;
+            newTableJSON.setWidth("auto");
+            newTableJSON.addStyleClass("sapUiSmallMargin");
+
+            var columnOrderID = new sap.m.Column();
+            var labelOrderID = new sap.m.Label();
+            labelOrderID.bindProperty("text", "i18n>orderID");
+            columnOrderID.setHeader(labelOrderID);
+            newTableJSON.addColumn(columnOrderID);
+
+            var columnFreight = new sap.m.Column();
+            var labelFreight = new sap.m.Label();
+            labelOrderID.bindProperty("text", "i18n>freight");
+            columnFreight.setHeader(labelFreight);
+            newTableJSON.addColumn(columnFreight);
+
+            var columnShipAddress = new sap.m.Column();
+            var labelShipAddress = new sap.m.Label();
+            labelShipAddress.bindProperty("text", "i18n>shipAddress");
+            columnShipAddress.setHeader(labelShipAddress);
+            newTableJSON.addColumn(columnShipAddress);
+
+            var columnListItem = new sap.m.ColumnListItem();
+
+            var cellOrderID = new sap.m.Label();
+            cellOrderID.bindProperty("text", "jsonEmployees>OrderID")
+            columnListItem.addCell(cellOrderID);
+
+            var cellFreight = new sap.m.Label();
+            cellFreight.bindProperty("text", "jsonEmployees>Freight")
+            columnListItem.addCell(cellFreight);
+
+            var cellShipAddress = new sap.m.Label();
+            cellShipAddress.bindProperty("text", "jsonEmployees>ShipAddress")
+            columnListItem.addCell(cellShipAddress);
+
+            var oBindingInfo = {
+                model : "jsonEmployees",
+                path : "Orders",
+                template : columnListItem
+            }
+            newTableJSON.bindAggregation("items", oBindingInfo);
+            newTableJSON.bindElement("jsonEmployees>" + oContext.getPath());
+
+            ordersTable.addItem(newTableJSON);
         }
 
         var Main = Controller.extend("logaligroup.logali.controller.MainView", {});
@@ -218,5 +209,8 @@ sap.ui.define([
         Main.prototype.onFilter = onFilter;
         Main.prototype.onClearFilter = onClearFilter;
         Main.prototype.showPostalCode = showPostalCode;
+        Main.prototype.onShowCity = onShowCity;
+        Main.prototype.onHideCity = onHideCity;
+        Main.prototype.showOrders = showOrders
         return Main;
     });
