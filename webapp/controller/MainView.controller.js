@@ -105,7 +105,7 @@ sap.ui.define([
          * los datos del campo Orders
          */
         function showOrders (oEvent) {
-            var ordersTable = this.getView().byId("ordersTable");
+            /*var ordersTable = this.getView().byId("ordersTable");
             ordersTable.destroyItems();
 
             var itemPressed = oEvent.getSource();
@@ -181,8 +181,28 @@ sap.ui.define([
             newTableJSON.bindAggregation("items", oBindingInfo);
             newTableJSON.bindElement("jsonEmployees>" + oContext.getPath());
 
-            ordersTable.addItem(newTableJSON);
-        }
+            ordersTable.addItem(newTableJSON);*/
+            //Get selected controller
+            var iconPress = oEvent.getSource();
+            //Conext from model
+            var oContext = iconPress.getBindingContext("jsonEmployees");
+
+            if(!this._odialogOrders) {
+                this._odialogOrders = sap.ui.xmlfragment("logaligroup.logali.fragment.DialogOrders",this);
+                this.getView().addDependent(this._odialogOrders);
+            };
+
+            //Obtenemos los datos del json y lo mandamos al dialogo
+            this._odialogOrders.bindElement("jsonEmployees>" + oContext.getPath());
+            this._odialogOrders.open();
+        };
+        /**
+         * Función que cierra el dialogo
+         * @param {*} oEvent 
+         */
+        function onCloseOrders (oEvent){
+            this._odialogOrders.close();
+        };
 
         var Main = Controller.extend("logaligroup.logali.controller.MainView", {});
         /**
@@ -211,6 +231,8 @@ sap.ui.define([
         Main.prototype.showPostalCode = showPostalCode;
         Main.prototype.onShowCity = onShowCity;
         Main.prototype.onHideCity = onHideCity;
-        Main.prototype.showOrders = showOrders
+        Main.prototype.showOrders = showOrders;
+        Main.prototype.onCloseOrders=onCloseOrders;
+
         return Main;
     });
