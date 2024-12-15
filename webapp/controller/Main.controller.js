@@ -46,6 +46,10 @@ sap.ui.define([
             var detailView = this.getView().byId("detailEmployeeView");
             detailView.bindElement("jsonEmployees>" + path);
             this.getView().getModel("jsonLayouts").setProperty("/ActiveKey", "TwoColumnsMidExpanded");
+        
+            var incidencemodel = new sap.ui.model.json.JSONModel([]);
+            detailView.setModel(incidencemodel, "incidenceModel");
+            detailView.byId("tableIncidence").removeAllContent();
         }
 
     });
