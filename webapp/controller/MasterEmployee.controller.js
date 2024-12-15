@@ -14,28 +14,7 @@ sap.ui.define([
         "use strict";
 
         function onInit() {
-            //Variable para obtener la instancia de la vista
-            var oView = this.getView();
-            //Variable para crear la instancia o nuevo modelo con JSONModel
-            var oJSONModelEmployees = new sap.ui.model.json.JSONModel();
-            //Se cargan los datos desde un fichero
-            oJSONModelEmployees.loadData("./localService/mockdata/Employees.json", false);
-            //Se vincula los datos a la vista
-            oView.setModel(oJSONModelEmployees, "jsonEmployees");
-            //Creación del segundo modelo
-            var oJSONModelCountries = new sap.ui.model.json.JSONModel();
-            oJSONModelCountries.loadData("./localService/mockdata/Countries.json", false);
-            oView.setModel(oJSONModelCountries, "jsonCountries");
-            //Creación del tercer modelo para mostrar y ocultar datos
-            var oJSONModelConfig = new sap.ui.model.json.JSONModel({
-                visibleID: true,
-                visibleName: true,
-                visibleCountry: true,
-                visibleCity: false,
-                visibleBtnShowCity: true,
-                visibleBtnHideCity: false
-            });
-            oView.setModel(oJSONModelConfig, "jsonCounfig");
+            this._bus = sap.ui.getCore().getEventBus();
         };
 
         function onFilter() {
@@ -105,6 +84,7 @@ sap.ui.define([
          * los datos del campo Orders
          */
         function showOrders (oEvent) {
+            //#region 
             /*var ordersTable = this.getView().byId("ordersTable");
             ordersTable.destroyItems();
 
@@ -182,6 +162,7 @@ sap.ui.define([
             newTableJSON.bindElement("jsonEmployees>" + oContext.getPath());
 
             ordersTable.addItem(newTableJSON);*/
+            //#endregion
             //Get selected controller
             var iconPress = oEvent.getSource();
             //Conext from model
@@ -203,8 +184,16 @@ sap.ui.define([
         function onCloseOrders (oEvent){
             this._odialogOrders.close();
         };
+        /**
+         * 
+         * @param {*} oEvent 
+         */
+        function showEmployee (oEvent) {
+            var path = oEvent.getSource().getBindingContext("jsonEmployees").getPath();
+            this._bus.publish("flexible", "showEmployee", path);
+        };
 
-        var Main = Controller.extend("logaligroup.logali.controller.MainView", {});
+        var Main = Controller.extend("logaligroup.logali.controller.MasterEmployee", {});
         /**
          * Función que valida la longitud dentro del input,
          * mostrando una lista cuando la longitud es igual a 6 ó
@@ -232,7 +221,8 @@ sap.ui.define([
         Main.prototype.onShowCity = onShowCity;
         Main.prototype.onHideCity = onHideCity;
         Main.prototype.showOrders = showOrders;
-        Main.prototype.onCloseOrders=onCloseOrders;
+        Main.prototype.onCloseOrders = onCloseOrders;
+        Main.prototype.showEmployee = showEmployee;
 
         return Main;
     });
