@@ -6,14 +6,15 @@
         <headerToolbar>
             <Toolbar>
                 <core:Icon
-                    src="{= ${incidenceModel>status}==='0' ? 'accept' :
-                            ${incidenceModel>status}==='1' ? 'alert' :
-                            ${incidenceModel>status}==='2' ? 'decline' : '' }"
+                    src="{= ${incidenceModel>Type}==='0' ? 'accept' :
+                            ${incidenceModel>Type}==='1' ? 'alert' :
+                            ${incidenceModel>Type}==='2' ? 'decline' : '' }"
                 />
                 <Title
-                    text="{i18n>incidence} {incidenceModel>index} {path : 'incidenceModel>date', formatter:'.Formatter.dateFormat' }"
+                    text="{i18n>incidence} {incidenceModel>IncidenceId} {path : 'incidenceModel>CreationDate', formatter:'.Formatter.dateFormat' }"
                 />
                 <ToolbarSpacer />
+                <Button icon="sap-icon://save" press="onSaveIncidence"></Button>
                 <core:Icon
                     src="delete"
                     press="onDeleteInsidence"
@@ -24,22 +25,22 @@
             <HBox>
                 <VBox class="sapUiSmallMarginEnd">
                     <Text text="{i18n>incidenceDate}" />
-                    <DatePicker dateValue="{incidenceModel>date}" />
+                    <DatePicker dateValue="{incidenceModel>CreationDate}" />
                 </VBox>
                 <VBox
-                    visible="{= ${incidenceModel>date} !== ' ' &amp;&amp; ${incidenceModel>date} !== undefined}"
+                    visible="{= ${incidenceModel>CreationDate} !== ' ' &amp;&amp; ${incidenceModel>CreationDate} !== undefined}"
                     class="sapUiSmallMarginEnd"
                 >
                     <Text text="{i18n>incidenceReason}" />
-                    <Input />
+                    <Input value="{incidenceModel>Reason}"/>
                 </VBox>
                 <VBox
-                    visible="{= ${incidenceModel>date} !== ' ' &amp;&amp; ${incidenceModel>date} !== undefined}"
+                    visible="{= ${incidenceModel>CreationDate} !== ' ' &amp;&amp; ${incidenceModel>CreationDate} !== undefined}"
                     class="sapUiSmallMarginEnd"
                 >
                     <Text text="{i18n>incidenceType}" />
                     <Select
-                        selectedKey="{incidenceModel>status}"
+                        selectedKey="{incidenceModel>Type}"
                         forceSelection="false"
                     >
                         <core:Item

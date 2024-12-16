@@ -16,13 +16,21 @@
       "toolsId": "9c0350f1-0afb-409d-a7d4-014f5f98fa1d"
     },
     "dataSources": {
-      "mainService": {
+      "Northwind.svc": {
         "uri": "/V2/Northwind/Northwind.svc/",
         "type": "OData",
         "settings": {
           "annotations": [],
           "localUri": "localService/metadata.xml",
           "odataVersion": "2.0"
+        }
+      },
+      "YSAPUI5_SRV_01": {
+        "uri": "/sap/opu/odata/sap/YSAPUI5_SRV_01/",
+        "type": "OData",
+        "settings": {
+          "odataVersion": "2.0",
+          "localuri": "localService/YSAPUI5_SRV_01/metadata.xml"
         }
       }
     }
@@ -63,10 +71,28 @@
           "bundleName": "logaligroup.logali.i18n.i18n"
         }
       },
-      "": {
-        "dataSource": "mainService",
+      "odataNorthwind": {
+        "dataSource": "Northwind.svc",
         "preload": true,
-        "settings": {}
+        "settings": {
+          "defaultOperationMode": "Server",
+          "defaultBindingMode": "OneWay",
+          "defaultCountMode": "Request",
+          "refreshAfterChange": false
+        }
+      },
+      "incidenceModel": {
+        "type": "sap.ui.model.odata.v2.ODataModel",
+        "dataSource": "YSAPUI5_SRV_01",
+        "preload": true,
+        "settings": {
+          "defaultOperationMode": "Server",
+          "defaultBindingMode": "TwoWay",
+          "defaultCountMode": "Request",
+          "refreshAfterChange": false,
+          "useBatch": false,
+          "defaultUpdateMethod": "Put"
+        }
       }
     },
     "resources": {
@@ -118,5 +144,9 @@
       "async": true,
       "id": "Main"
     }
+  },
+  "sap.cloud": {
+    "public": true,
+    "service": "logaligrouplogali"
   }
 }

@@ -33,6 +33,7 @@ server:
           - path: /V2
             url: https://services.odata.org
             destination: Northwind
+            authenticationType: NoAuthentication
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:

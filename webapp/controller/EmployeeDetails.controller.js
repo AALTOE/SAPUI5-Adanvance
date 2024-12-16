@@ -4,7 +4,7 @@ sap.ui.define([
 ], function (Controller, formatter) {
 
     function onInit() {
-
+        this._bus = sap.ui.getCore().getEventBus(); 
     };
     /**
      * Función que se encarga de realizar el binding del índice para el modelo incidenceModel.
@@ -47,11 +47,20 @@ sap.ui.define([
             tableIncidence.getContent()[j].bindElement("incidenceModel>/" + j);
         }
     };
+    /**
+     * Función que guarda una incidencia
+     */
+    function onSaveIncidence (oEvent){
+        var incidence = oEvent.getSource().getParent().getParent();
+        var incidenceRow = incidence.getBindingContext("incidenceModel");
+        this._bus.publish("incidence", "onSaveIncidence", { incidenceRow : incidenceRow.sPath.replace('/', '')})
+    };
 
     var Main = Controller.extend("logaligroup.logali.controller.EmployeeDetails", {});
     Main.prototype.onInit = onInit;
     Main.prototype.onCreateIncidence = onCreateIncidence;
     Main.prototype.Formatter = formatter;
     Main.prototype.onDeleteInsidence = onDeleteInsidence;
+    Main.prototype.onSaveIncidence = onSaveIncidence;
     return Main;
 });

@@ -4,7 +4,7 @@
 >
     <Dialog title="{i18n>orders}">
         <Table
-            items="{jsonEmployees>Orders}"
+            items="{odataNorthwind>Orders}"
             width="700px"
         >
             <columns>
@@ -27,9 +27,9 @@
             <items>
                 <ColumnListItem>
                     <cells>
-                        <Label text="{jsonEmployees>OrderID}" />
-                        <Label text="{jsonEmployees>Freight}" />
-                        <Label text="{jsonEmployees>ShipAddress}" />
+                        <Label text="{odataNorthwind>OrderID}" />
+                        <Label text="{odataNorthwind>Freight}" />
+                        <Label text="{odataNorthwind>ShipAddress}" />
                     </cells>
                 </ColumnListItem>
             </items>

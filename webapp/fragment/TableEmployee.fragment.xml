@@ -17,7 +17,7 @@
         />
         <Table
             id="tableEmployee"
-            items="{jsonEmployees>/Employees}"
+            items="{odataNorthwind>/Employees}"
         >
             <columns>
                 <Column visible="{jsonCounfig>/visibleID}">
@@ -63,19 +63,19 @@
                     <cells>
                         <Label
                             id="labelID"
-                            text="{jsonEmployees>EmployeeID}"
+                            text="{odataNorthwind>EmployeeID}"
                         />
                         <Label
                             id="labelName"
-                            text="{jsonEmployees>LastName} {jsonEmployees>FirstName}"
+                            text="{odataNorthwind>LastName} {odataNorthwind>FirstName}"
                         />
                         <Label
                             id="labelCountry2"
-                            text="{jsonEmployees>Country}"
+                            text="{odataNorthwind>Country}"
                         />
                         <Label
                             id="labelCity"
-                            text="{jsonEmployees>City}"
+                            text="{odataNorthwind>City}"
                         />
                         <core:Icon
                             src="sap-icon://show"
