@@ -11,7 +11,7 @@
                             ${incidenceModel>Type}==='2' ? 'decline' : '' }"
                 />
                 <Title
-                    text="{i18n>incidence} {=${incidenceModel>IncidenceId} ? parseInt(${incidenceModel>IncidenceId}) : '' } 
+                    text="{i18n>incidence} {= ${incidenceModel>IncidenceId} ? parseInt(${incidenceModel>IncidenceId}) : '' } 
                     {path : 'incidenceModel>CreationDate', formatter:'.Formatter.dateFormat' }"
                 />
                 <ToolbarSpacer />
@@ -26,14 +26,14 @@
             <HBox>
                 <VBox class="sapUiSmallMarginEnd">
                     <Text text="{i18n>incidenceDate}" />
-                    <DatePicker dateValue="{incidenceModel>CreationDate}" />
+                    <DatePicker dateValue="{incidenceModel>CreationDate}" change="updateIncidenceCreationDate"/>
                 </VBox>
                 <VBox
                     visible="{= ${incidenceModel>CreationDate} !== ' ' &amp;&amp; ${incidenceModel>CreationDate} !== undefined}"
                     class="sapUiSmallMarginEnd"
                 >
                     <Text text="{i18n>incidenceReason}" />
-                    <Input value="{incidenceModel>Reason}"/>
+                    <Input value="{incidenceModel>Reason}" change="updateIncidenceReason"/>
                 </VBox>
                 <VBox
                     visible="{= ${incidenceModel>CreationDate} !== ' ' &amp;&amp; ${incidenceModel>CreationDate} !== undefined}"
@@ -43,6 +43,7 @@
                     <Select
                         selectedKey="{incidenceModel>Type}"
                         forceSelection="false"
+                        change="updateIncidenceType"
                     >
                         <core:Item
                             key="0"
