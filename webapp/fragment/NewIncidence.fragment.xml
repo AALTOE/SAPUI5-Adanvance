@@ -11,7 +11,8 @@
                             ${incidenceModel>Type}==='2' ? 'decline' : '' }"
                 />
                 <Title
-                    text="{i18n>incidence} {incidenceModel>IncidenceId} {path : 'incidenceModel>CreationDate', formatter:'.Formatter.dateFormat' }"
+                    text="{i18n>incidence} {=${incidenceModel>IncidenceId} ? parseInt(${incidenceModel>IncidenceId}) : '' } 
+                    {path : 'incidenceModel>CreationDate', formatter:'.Formatter.dateFormat' }"
                 />
                 <ToolbarSpacer />
                 <Button icon="sap-icon://save" press="onSaveIncidence"></Button>

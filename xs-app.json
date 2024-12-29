@@ -4,16 +4,14 @@
   "routes": [
     {
       "source": "^/V2/Northwind/Northwind.svc/(.*)$",
-      "target": "/V2/Northwind/Northwind.svc/$1",
       "destination": "Northwind",
-      "authenticationType": "xsuaa",
+      "authenticationType": "none",
       "csrfProtection": false
     },
     {
       "source": "^/sap/opu/odata/sap/YSAPUI5_SRV_01/(.*)$",
-      "target": "/sap/opu/odata/sap/YSAPUI5_SRV_01/$1",
       "destination": "ERP13",
-      "authenticationType": "xsuaa",
+      "authenticationType": "none",
       "csrfProtection": false
     },
     {

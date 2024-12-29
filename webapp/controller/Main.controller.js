@@ -60,6 +60,7 @@ sap.ui.define([
             var incidencemodel = new sap.ui.model.json.JSONModel([]);
             detailView.setModel(incidencemodel, "incidenceModel");
             detailView.byId("tableIncidence").removeAllContent();
+            this.onReadOdataIncidence(this._detailEmployeeView.getBindingContext("odataNorthwind").getObject().EmployeeID);
             sap.ui.core.BusyIndicator.hide();
         },
         /**
@@ -85,6 +86,7 @@ sap.ui.define([
 
                 this.getView().getModel("incidenceModel").create("/IncidentsSet", body, {
                     success: function () {
+                        this.onReadOdataIncidence.bind(this)(employeeId);
                         sap.m.MessageToast.show(oResourceBundle.getText("odataSaveOK"));
                     }.bind(this),
                     error: function () {
@@ -94,6 +96,35 @@ sap.ui.define([
             } else {
                 sap.m.MessageToast.show(oResourceBundle.getText("odataNoChanges"));
             };
+        },
+        /**
+         * Función que obtiene las incidencias y se muestra en la vista
+         * @param {*} employeeId 
+         */
+        onReadOdataIncidence : function (employeeId) {
+            this.getView().getModel("incidenceModel").read("/IncidentsSet", {
+                filters : [
+                    new sap.ui.model.Filter("SapId", "EQ", this.getOwnerComponent().SapId),
+                    new sap.ui.model.Filter("EmployeeId", "EQ", employeeId.toString())
+                ],
+                success: function (data) {
+                    var incidenceModel = this._detailEmployeeView.getModel("incidenceModel");
+                    incidenceModel.setData(data.results);
+                    var tableIncidence = this._detailEmployeeView.byId("tableIncidence");
+                    //Borramos todo el contenido cuando el usuario presiona variaveces el mismo item
+                    tableIncidence.removeAllContent();
+                    //Colocamos cada registro en la tabla
+                    for(var incidence in data.results){
+                        var newIncidence = sap.ui.xmlfragment("logaligroup.logali.fragment.NewIncidence", this._detailEmployeeView.getController());
+                        this._detailEmployeeView.addDependent(newIncidence);
+                        newIncidence.bindElement("incidenceModel>/" + incidence);
+                        tableIncidence.addContent(newIncidence);
+                    }
+                }.bind(this),
+                error : function (e){
+                    console.log(e);
+                }
+            });
         }
     });
 });
