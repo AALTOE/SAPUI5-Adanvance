@@ -26,26 +26,14 @@ sap.ui.define([
      * @param {*} oEvent 
      */
     function onDeleteInsidence (oEvent){
-        //Identificamos donde esta la tabla de incidencias
-        var tableIncidence = this.getView().byId("tableIncidence"); 
-        //Obtenemos la fila o el elemento seleccionado
-        var rowIncidence = oEvent.getSource().getParent().getParent();
-        //Obtenemos los datos lde moelo incidenceModel
-        var incidenceModel = this.getView().getModel("incidenceModel");
-        var odata = incidenceModel.getData();
-        var contextObject = rowIncidence.getBindingContext("incidenceModel");
-        //Eliminamos los datos y reinciamos el indice
-        odata.splice(contextObject.index-1,1);
-        for (var i in odata) {
-            odata[i].index = parseInt(i) + 1;
-        };
-        //Refrescamos el modelo
-        incidenceModel.refresh();
-        tableIncidence.removeContent(rowIncidence);
-
-        for (var j in tableIncidence.getContent()) {
-            tableIncidence.getContent()[j].bindElement("incidenceModel>/" + j);
-        }
+        //Obtiene todo el objeto del item seleccionado
+        var contextObj = oEvent.getSource().getBindingContext("incidenceModel").getObject();
+        //Publicamos un evento
+        this._bus.publish("incidence", "onDeleteIncidence", { 
+            IncidenceId : contextObj.IncidenceId,
+            SapId : contextObj.SapId,
+            EmployeeId : contextObj.EmployeeId
+        });
     };
     /**
      * Función que guarda una incidencia
