@@ -1,7 +1,8 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
-    "logaligroup/logali/model/formatter"
-], function (Controller, formatter) {
+    "logaligroup/logali/model/formatter",
+    "sap/m/MessageBox"
+], function (Controller, formatter, MessageBox) {
 
     function onInit() {
         this._bus = sap.ui.getCore().getEventBus(); 
@@ -16,7 +17,7 @@ sap.ui.define([
         var incidenceModel = this.getView().getModel("incidenceModel");
         var odata = incidenceModel.getData();
         var index = odata.length;
-        odata.push({ index : index + 1});
+        odata.push({ index : index + 1, _ValidateDate: false, EnableSave : false});
         incidenceModel.refresh();
         newIncidence.bindElement("incidenceModel>/" + index);
         tableIncidence.addContent(newIncidence)
@@ -28,11 +29,19 @@ sap.ui.define([
     function onDeleteInsidence (oEvent){
         //Obtiene todo el objeto del item seleccionado
         var contextObj = oEvent.getSource().getBindingContext("incidenceModel").getObject();
-        //Publicamos un evento
-        this._bus.publish("incidence", "onDeleteIncidence", { 
-            IncidenceId : contextObj.IncidenceId,
-            SapId : contextObj.SapId,
-            EmployeeId : contextObj.EmployeeId
+
+        MessageBox.confirm(this.getView().getModel("i18n").getResourceBundle().getText("confirmDeleteIncidence"), {
+            //Mostramos un mensaje al usuario para validar si realmente quiere eliminar el elemento
+            onClose : function (oAction){
+                if (oAction === "OK"){
+                    //Publicamos un evento
+                    this._bus.publish("incidence", "onDeleteIncidence", { 
+                        IncidenceId : contextObj.IncidenceId,
+                        SapId : contextObj.SapId,
+                        EmployeeId : contextObj.EmployeeId
+                    });
+                }
+            }.bind(this)
         });
     };
     /**
@@ -48,27 +57,76 @@ sap.ui.define([
      * @param {*} oEvent 
      */
     function updateIncidenceCreationDate (oEvent){
-        var context = oEvent.getSource().getBindingContext("incidenceModel");
-        var contextObj = context.getObject();
-        contextObj.CreationDateX = true;
+        let context = oEvent.getSource().getBindingContext("incidenceModel");
+        let contextObj = context.getObject();
+        let oResourceBundle = this.getView().getModel("i18n").getResourceBundle();
+        //Validamos la fecha
+        if(!oEvent.getSource().isValidValue()){
+            contextObj._ValidateDate = false;
+            contextObj.CreationDatestate = "Error"
+            MessageBox.error(oResourceBundle.getText("errorCreationDareValue"), {
+                title : "Error",
+                onClose : null,
+                styleClass : "",
+                actions : MessageBox.Action.Close,
+                emphasizedAction : null,
+                initialFocus :null,
+                textDirection: sap.ui.core.TextDirection.Inherit
+            });
+        }else{
+            contextObj.CreationDateX = true;
+            contextObj._ValidateDate = true;
+            contextObj.CreationDatestate = "None"
+        }
+        //Validamos para habilitar el boton de guardar
+        if(oEvent.getSource().isValidValue() && contextObj.Reason) {
+            contextObj.EnableSave = true;
+        }else{
+            contextObj.EnableSave = false;
+        }
+
+        context.getModel().refresh();
     };
     /**
      * Función para actualizar el campo Reason
      * @param {*} oEvent 
      */
     function updateIncidenceReason (oEvent){
-        var context = oEvent.getSource().getBindingContext("incidenceModel");
-        var contextObj = context.getObject();
-        contextObj.ReasonX = true;
+        let context = oEvent.getSource().getBindingContext("incidenceModel");
+        let contextObj = context.getObject();
+        //Validamos el campo
+        if(oEvent.getSource().getValue()){
+            contextObj.ReasonX = true;
+            contextObj.Reasonstate = "None"
+        }else{
+            contextObj.Reasonstate = "Error"
+        }
+        //Validamos para habilitar el boton de guardar
+        if(contextObj._ValidateDate && oEvent.getSource().getValue()){
+            contextObj.EnableSave = true;
+        }else{
+            contextObj.EnableSave = false;
+        }
+
+        context.getModel().refresh();
     };
     /**
      * Función para actualizar la selección Type
      * @param {*} oEvent 
      */
     function updateIncidenceType (oEvent){
-        var context = oEvent.getSource().getBindingContext("incidenceModel");
-        var contextObj = context.getObject();
+        let context = oEvent.getSource().getBindingContext("incidenceModel");
+        let contextObj = context.getObject();
+
+        //Validamos para habilitar el boton de guardar
+        if(contextObj._ValidateDate && contextObj.Reason){
+            contextObj.EnableSave = true;
+        }else{
+            contextObj.EnableSave = false;
+        }
+        //Inidicamos que a la bandera que se realizo una modificación
         contextObj.TypeX = true;
+        context.getModel().refresh();
     };
 
     var Main = Controller.extend("logaligroup.logali.controller.EmployeeDetails", {});

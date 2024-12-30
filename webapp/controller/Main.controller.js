@@ -1,6 +1,7 @@
 sap.ui.define([
-    "sap/ui/core/mvc/Controller"
-], function (Controller) {
+    "sap/ui/core/mvc/Controller",
+    "sap/m/MessageBox"
+], function (Controller, MessageBox) {
 
     return Controller.extend("logaligroup.logali.controller.Main", {
 
@@ -104,7 +105,8 @@ sap.ui.define([
                 this.getView().getModel("incidenceModel").create("/IncidentsSet", body, {
                     success: function () {
                         this.onReadOdataIncidence.bind(this)(employeeId);
-                        sap.m.MessageToast.show(oResourceBundle.getText("odataSaveOK"));
+                        //sap.m.MessageToast.show(oResourceBundle.getText("odataSaveOK"));
+                        MessageBox.success(oResourceBundle.getText("odataSaveOK"));
                     }.bind(this),
                     error: function () {
                         sap.m.MessageToast.show(oResourceBundle.getText("odataSaveKO"));
@@ -156,6 +158,11 @@ sap.ui.define([
                     tableIncidence.removeAllContent();
                     //Colocamos cada registro en la tabla
                     for (var incidence in data.results) {
+                        //Inicamos que el campo Date cuenta con datos y es valido
+                        data.results[incidence]._ValidateDate = true;
+                        //Desactivamos el boton save para validar los datos
+                        data.results[incidence].EnableSave = false;
+
                         var newIncidence = sap.ui.xmlfragment("logaligroup.logali.fragment.NewIncidence", this._detailEmployeeView.getController());
                         this._detailEmployeeView.addDependent(newIncidence);
                         newIncidence.bindElement("incidenceModel>/" + incidence);
