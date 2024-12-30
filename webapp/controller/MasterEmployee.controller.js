@@ -192,14 +192,26 @@ sap.ui.define([
             var path = oEvent.getSource().getBindingContext("odataNorthwind").getPath();
             this._bus.publish("flexible", "showEmployee", path);
         };
+        /**
+         * Función que envia un id y abre una nueva vista para obtener los detalles
+         * @param {*} oEvent 
+         */
+        function toOrderDetails (oEvent) {
+            var orderID = oEvent.getSource().getBindingContext("odataNorthwind").getObject().OrderID;
+            var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
+            oRouter.navTo("RouteOrderDetails", {
+                OrderID : orderID
+            });
+        };
 
         var Main = Controller.extend("logaligroup.logali.controller.MasterEmployee", {});
+        //#region Validación
         /**
          * Función que valida la longitud dentro del input,
          * mostrando una lista cuando la longitud es igual a 6 ó
          * ocultando una lista cuando la longitud es menor a 6
          */
-        Main.prototype.onValidate = function () {
+        /*Main.prototype.onValidate = function () {
             var inputEmployee = this.byId("inputEmployee");
             var valueEmployee = inputEmployee.getValue();
 
@@ -212,8 +224,8 @@ sap.ui.define([
                 this.byId("labelCountry").setVisible(false);
                 this.byId("slCountry").setVisible(false);
             }
-        };
-
+        };*/
+        //#endregion
         Main.prototype.onInit = onInit;
         Main.prototype.onFilter = onFilter;
         Main.prototype.onClearFilter = onClearFilter;
@@ -223,6 +235,7 @@ sap.ui.define([
         Main.prototype.showOrders = showOrders;
         Main.prototype.onCloseOrders = onCloseOrders;
         Main.prototype.showEmployee = showEmployee;
+        Main.prototype.toOrderDetails = toOrderDetails;
 
         return Main;
     });
