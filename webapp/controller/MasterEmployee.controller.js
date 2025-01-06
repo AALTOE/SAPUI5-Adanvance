@@ -1,5 +1,5 @@
 sap.ui.define([
-    "sap/ui/core/mvc/Controller",
+    "logaligroup/logali/controller/Base.controller",
     "sap/ui/model/Filter",
     "sap/ui/model/FilterOperator"
 ],
@@ -10,7 +10,7 @@ sap.ui.define([
      * @param {sap.ui.model.FilterOperator} FilterOperator
      * @returns 
      */
-    function (Controller, Filter, FilterOperator) {
+    function (Base, Filter, FilterOperator) {
         "use strict";
 
         function onInit() {
@@ -192,40 +192,9 @@ sap.ui.define([
             var path = oEvent.getSource().getBindingContext("odataNorthwind").getPath();
             this._bus.publish("flexible", "showEmployee", path);
         };
-        /**
-         * Función que envia un id y abre una nueva vista para obtener los detalles
-         * @param {*} oEvent 
-         */
-        function toOrderDetails (oEvent) {
-            var orderID = oEvent.getSource().getBindingContext("odataNorthwind").getObject().OrderID;
-            var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
-            oRouter.navTo("RouteOrderDetails", {
-                OrderID : orderID
-            });
-        };
 
-        var Main = Controller.extend("logaligroup.logali.controller.MasterEmployee", {});
-        //#region Validación
-        /**
-         * Función que valida la longitud dentro del input,
-         * mostrando una lista cuando la longitud es igual a 6 ó
-         * ocultando una lista cuando la longitud es menor a 6
-         */
-        /*Main.prototype.onValidate = function () {
-            var inputEmployee = this.byId("inputEmployee");
-            var valueEmployee = inputEmployee.getValue();
-
-            if (valueEmployee.length === 6) {
-                //inputEmployee.setDescription("OK");
-                this.byId("labelCountry").setVisible(true);
-                this.byId("slCountry").setVisible(true);
-            } else {
-                //inputEmployee.setDescription("NOT OK");
-                this.byId("labelCountry").setVisible(false);
-                this.byId("slCountry").setVisible(false);
-            }
-        };*/
-        //#endregion
+        var Main = Base.extend("logaligroup.logali.controller.MasterEmployee", {});
+       
         Main.prototype.onInit = onInit;
         Main.prototype.onFilter = onFilter;
         Main.prototype.onClearFilter = onClearFilter;
@@ -235,7 +204,6 @@ sap.ui.define([
         Main.prototype.showOrders = showOrders;
         Main.prototype.onCloseOrders = onCloseOrders;
         Main.prototype.showEmployee = showEmployee;
-        Main.prototype.toOrderDetails = toOrderDetails;
 
         return Main;
     });

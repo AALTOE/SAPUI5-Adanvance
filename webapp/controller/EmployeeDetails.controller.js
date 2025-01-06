@@ -1,8 +1,8 @@
 sap.ui.define([
-    "sap/ui/core/mvc/Controller",
+    "logaligroup/logali/controller/Base.controller",
     "logaligroup/logali/model/formatter",
     "sap/m/MessageBox"
-], function (Controller, formatter, MessageBox) {
+], function (Base, formatter, MessageBox) {
 
     function onInit() {
         this._bus = sap.ui.getCore().getEventBus();
@@ -129,19 +129,7 @@ sap.ui.define([
         context.getModel().refresh();
     };
 
-    /**
-    * Función que envia un id y abre una nueva vista para obtener los detalles
-    * @param {*} oEvent 
-    */
-    function toOrderDetails(oEvent) {
-        var orderID = oEvent.getSource().getBindingContext("odataNorthwind").getObject().OrderID;
-        var oReouter = sap.ui.core.UIComponent.getRouterFor(this);
-        oReouter.navTo("RouteOrderDetails", {
-            OrderID: orderID
-        });
-    };
-
-    var Main = Controller.extend("logaligroup.logali.controller.EmployeeDetails", {});
+    var Main = Base.extend("logaligroup.logali.controller.EmployeeDetails", {});
     Main.prototype.onInit = onInit;
     Main.prototype.onCreateIncidence = onCreateIncidence;
     Main.prototype.Formatter = formatter;
@@ -150,6 +138,5 @@ sap.ui.define([
     Main.prototype.updateIncidenceCreationDate = updateIncidenceCreationDate;
     Main.prototype.updateIncidenceReason = updateIncidenceReason;
     Main.prototype.updateIncidenceType = updateIncidenceType;
-    Main.prototype.toOrderDetails = toOrderDetails;
     return Main;
 });

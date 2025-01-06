@@ -6,6 +6,7 @@
     xmlns="sap.m"
     xmlns:l="sap.ui.layout"
     xmlns:f="sap.ui.layout.form"
+    xmlns:sc="logaligroup.logali.control"
 >
     <Page>
         <customHeader>
@@ -27,40 +28,64 @@
                 <l:Grid defaultSpan="L6 M6 S12">
                     <f:Form editable="false">
                         <f:layout>
-                            <f:ResponsiveGridLayout labelSpanL="6" labelSpanM="6" labelSpanS="12"/>
+                            <f:ResponsiveGridLayout
+                                labelSpanL="6"
+                                labelSpanM="6"
+                                labelSpanS="12"
+                            />
                         </f:layout>
                         <f:formContainers>
-                            <f:FormContainer >
+                            <f:FormContainer>
                                 <f:formElements>
                                     <f:FormElement label="{i18n>orderDate}">
                                         <f:fields>
-                                            <Text text="{path:'odataNorthwind>OrderDate', type:'sap.ui.model.odata.type.Date'}"></Text>
+                                            <Text
+                                                text="{path:'odataNorthwind>OrderDate', type:'sap.ui.model.odata.type.Date'}"
+                                            />
                                         </f:fields>
                                     </f:FormElement>
 
                                     <f:FormElement label="{i18n>freight}">
                                         <f:fields>
-                                            <Text text="{odataNorthwind>Freight}"></Text>
+                                            <Text
+                                                text="{odataNorthwind>Freight}"
+                                            />
                                         </f:fields>
                                     </f:FormElement>
 
                                     <f:FormElement label="{i18n>shipName}">
                                         <f:fields>
-                                            <Text text="{odataNorthwind>ShipName}"></Text>
+                                            <Text
+                                                text="{odataNorthwind>ShipName}"
+                                            />
                                         </f:fields>
                                     </f:FormElement>
 
                                     <f:FormElement label="{i18n>shipAddress}">
                                         <f:fields>
-                                            <Text text="{odataNorthwind>ShipAddress}, {odataNorthwind>ShipCity}, {odataNorthwind>ShipCountry}"></Text>
+                                            <Text
+                                                text="{odataNorthwind>ShipAddress}, {odataNorthwind>ShipCity}, {odataNorthwind>ShipCountry}"
+                                            />
                                         </f:fields>
                                     </f:FormElement>
-
                                 </f:formElements>
                             </f:FormContainer>
                         </f:formContainers>
                     </f:Form>
+
+                    <FlexBox class="sapUiTinyMarginTop">
+                        <sc:Signature id="signature" />
+                        <Button
+                            text="{i18n>clear}"
+                            press="onClearSignature"
+                            class="sapUiTinyMarginBigin"
+                        />
+                    </FlexBox>
                 </l:Grid>
+            </Panel>
+
+            <Panel headerText="{i18n>orderProducts}">
+                <List items="{path:'odataNorthwind>Order_Details', parameters:{expand : 'Product'}, factory: '.factoryOrderDetails'}"></List>
             </Panel>
         </content>
     </Page>
