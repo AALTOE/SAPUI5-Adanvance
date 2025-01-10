@@ -1,9 +1,10 @@
 sap.ui.define(
     [
       "sap/ui/core/mvc/Controller",
-      "sap/ui/core/routing/History"
+      "sap/ui/core/routing/History",
+      "sap/m/MessageBox"
     ],
-    function (BaseController, History) {
+    function (BaseController, History, MessageBox) {
       "use strict";
       
       function _onObjectMatched(oEvent){
@@ -65,6 +66,35 @@ sap.ui.define(
               ]
             });
             return customListItem;
+          }
+        },
+
+        onSaveSignature :  function (oEvent) {
+          const signature = this.byId("signature");
+          const oResourceBundle = this.getView().getModel("i18n").getResourceBundle();
+          let signaturePNG;
+
+          if(!signature.isFill()){
+            MessageBox.error(oResourceBundle.getText("fillSignature"));
+          }else{
+            signaturePNG = signature.getSignature().replace("data:image/png;base64,","");
+            let objectOrder = oEvent.getSource().getBindingContext("odataNorthwind").getObject();
+            let body = {
+              OrderId : objectOrder.OrderID.toString(),
+              SapId : this.getOwnerComponent().SapId,
+              EmployeeId : objectOrder.EmployeeID.toString(),
+              MimeType : "image/png",
+              MediaContent : signaturePNG
+            };
+
+            this.getView().getModel("incidenceModel").create("/SignatureSet", body , {
+              success : function () {
+                MessageBox.information(oResourceBundle.getText("signatureSave"));
+              },
+              error : function () {
+                MessageBox.error(oResourceBundle.getText("signatureNotSave"));
+              }
+            })
           }
         }
       });

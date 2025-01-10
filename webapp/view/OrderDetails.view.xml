@@ -85,8 +85,19 @@
             </Panel>
 
             <Panel headerText="{i18n>orderProducts}">
-                <List items="{path:'odataNorthwind>Order_Details', parameters:{expand : 'Product'}, factory: '.factoryOrderDetails'}"></List>
+                <List
+                    items="{path:'odataNorthwind>Order_Details', parameters:{expand : 'Product'}, factory: '.factoryOrderDetails'}"
+                />
             </Panel>
         </content>
+        <footer>
+            <Toolbar>
+                <ToolbarSpacer />
+                <Button
+                    text="{i18n>saveSignature}"
+                    press="onSaveSignature"
+                />
+            </Toolbar>
+        </footer>
     </Page>
 </mvc:View>
