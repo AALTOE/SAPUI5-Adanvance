@@ -61,7 +61,7 @@ sap.ui.define(
           path : "incidenceModel>/FilesSet",
           filters : [
             new Filter("OrderId",FilterOperator.EQ,orderID),
-            new Filter("SapId",FilterOperator.EQ,this.getOwnerComponent().SapId),
+            new Filter("SapId","c24c313@logaligroup.com"),
             new Filter("EmployeeId",FilterOperator.EQ,EmployeeID)
           ],
           template : new sap.m.UploadCollectionItem({
@@ -173,8 +173,24 @@ sap.ui.define(
             value: this.getView().getModel("incidenceModel").getSecurityToken()
           });
           oUploadCollection.addHeaderParameter(oCustomerHeaderToken);
+        },
+
+        onFileUploadComplete : function(oEvent){
+          oEvent.getSource().getBinding("items").refresh();
+        },
+
+        onFiledeleted : function (oEvent) {
+          var oUploadCollection = oEvent.getSource();
+          var sPath = oEvent.getParameter("item").getBindingContext("incidenceModel").getPath();
+          this.getView().getModel("incidenceModel").remove(sPath, {
+            success : function (){
+              oUploadCollection.getBinding("items").refresh();
+            },
+            error : function (){
+
+            }
+          });
         }
         
-      });
-    }
-  );
+    });
+});
