@@ -8,10 +8,42 @@ sap.ui.define(
       "use strict";
       
       function _onObjectMatched(oEvent){
+        this.onClearSignature();
+
         this.getView().bindElement({
           path : "/Orders("+ oEvent.getParameter("arguments").OrderID +")",
-          model : "odataNorthwind"
-        })
+          model : "odataNorthwind",
+          events : {
+            dataReceived : function(oData){
+              _redSignature.bind(this)(oData.getParameter("data").OrderID, oData.getParameter("data").EmployeeID);
+            }.bind(this)
+          }
+        });
+
+        const objContext = this.getView().getModel("odataNorthwind").getContext("/Orders("+ oEvent.getParameter("arguments").OrderID +")").getObject();
+        if(objContext){
+          _redSignature.bind(this)(objContext.OrderID, objContext.EmployeeID);
+        }
+        
+      };
+
+      /**
+       * Función que obtiene la firma
+       * @param {*} orderID 
+       * @param {*} EmployeeID 
+       */
+      function _redSignature(orderID, EmployeeID){
+        this.getView().getModel("incidenceModel").read("/SignatureSet(OrderId='"+orderID+"',SapId='"+this.getOwnerComponent().SapId+"',EmployeeId='"+EmployeeID+"')",{
+          success : function (data){
+            const signature = this.getView().byId("signature");
+            if(data.MediaContent !== ""){
+              signature.setSignature("data:image/png;base64,"+data.MediaContent);
+            }
+          }.bind(this),
+          error: function (data){
+
+          }
+        });
       }
 
       return BaseController.extend("logaligroup.logali.controller.OrderDetails", {
@@ -38,7 +70,7 @@ sap.ui.define(
             }
         },
 
-        onClearSignature : function (oEvent) {
+        onClearSignature : function () {
           var signature = this.byId("signature");
           signature.clear();
         },

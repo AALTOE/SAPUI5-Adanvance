@@ -74,7 +74,7 @@ sap.ui.define(
             return this.signaturePad.toDataURL();
         },
         /**
-         * Muestras la imagen de a firma
+         * Muestras la imagen de la firma
          * @param {*} signature 
          */
         setSignature : function (signature) {
