@@ -61,7 +61,7 @@ sap.ui.define(
           path : "incidenceModel>/FilesSet",
           filters : [
             new Filter("OrderId",FilterOperator.EQ,orderID),
-            new Filter("SapId","c24c313@logaligroup.com"),
+            new Filter("SapId",FilterOperator.EQ,"c24c313@logaligroup.com"),
             new Filter("EmployeeId",FilterOperator.EQ,EmployeeID)
           ],
           template : new sap.m.UploadCollectionItem({
@@ -190,6 +190,15 @@ sap.ui.define(
 
             }
           });
+        },
+
+        /**
+         * Función que descarga los archivos
+         * @param {*} oEvent 
+         */
+        downloadFile : function (oEvent) {
+          const sPath = oEvent.getSource().getBindingContext("incidenceModel").getPath();
+          window.open("/sap/opu/odata/sap/YSAPUI5_SRV_01" + sPath + "/$value") ;
         }
         
     });
