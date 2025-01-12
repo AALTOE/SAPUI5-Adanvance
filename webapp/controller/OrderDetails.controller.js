@@ -2,9 +2,20 @@ sap.ui.define(
     [
       "sap/ui/core/mvc/Controller",
       "sap/ui/core/routing/History",
-      "sap/m/MessageBox"
+      "sap/m/MessageBox",
+      "sap/ui/model/Filter",
+      "sap/ui/model/FilterOperator"
     ],
-    function (BaseController, History, MessageBox) {
+    /**
+     * 
+     * @param {sap.ui.core.mvc.Controller} Controller 
+     * @param {sap.ui.core.routing.History} History 
+     * @param {sap.m.MessageBox} MessageBox 
+     * @param {sap.ui.model.Filter} Filter 
+     * @param {sap.ui.model.FilterOperator} FilterOperator 
+     * @returns 
+     */
+    function (Controller, History, MessageBox, Filter, FilterOperator) {
       "use strict";
       
       function _onObjectMatched(oEvent){
@@ -44,9 +55,24 @@ sap.ui.define(
 
           }
         });
+
+        //Bind file
+        this.byId("upliadCollection").bindAggregation("items", {
+          path : "incidenceModel>/FilesSet",
+          filters : [
+            new Filter("OrderId",FilterOperator.EQ,orderID),
+            new Filter("SapId",FilterOperator.EQ,this.getOwnerComponent().SapId),
+            new Filter("EmployeeId",FilterOperator.EQ,EmployeeID)
+          ],
+          template : new sap.m.UploadCollectionItem({
+            documentId : "{incidenceModel>AttId}",
+            visibleEdit : false,
+            fileName : "{incidenceModel>FileName}"
+          }).attachPress(this.downloadFile)
+        })
       }
 
-      return BaseController.extend("logaligroup.logali.controller.OrderDetails", {
+      return Controller.extend("logaligroup.logali.controller.OrderDetails", {
   
         onInit: function () {
           var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
@@ -126,9 +152,29 @@ sap.ui.define(
               error : function () {
                 MessageBox.error(oResourceBundle.getText("signatureNotSave"));
               }
-            })
-          }
+            });
+          };
+        },
+
+        onFileBeforeUpload : function (oEvent){
+          let fileName = oEvent.getParameter("fileName");
+          let objContext = oEvent.getSource().getBindingContext("odataNorthwind").getObject();
+          let oCustomerHeaderSlug = new sap.m.UploadCollectionParameter({
+            name : "slug",
+            value : objContext.OrderID+";"+this.getOwnerComponent().SapId+";"+objContext.EmployeeID+";"+fileName
+          });
+          oEvent.getParameters().addHeaderParameter(oCustomerHeaderSlug);
+        },
+
+        onFileChange : function (oEvent) {
+          let oUploadCollection = oEvent.getSource();
+          let oCustomerHeaderToken = new sap.m.UploadCollectionParameter({
+            name: "x-csrf-token",
+            value: this.getView().getModel("incidenceModel").getSecurityToken()
+          });
+          oUploadCollection.addHeaderParameter(oCustomerHeaderToken);
         }
+        
       });
     }
   );
