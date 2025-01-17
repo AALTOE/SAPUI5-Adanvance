@@ -61,7 +61,7 @@ sap.ui.define(
           path : "incidenceModel>/FilesSet",
           filters : [
             new Filter("OrderId",FilterOperator.EQ,orderID),
-            new Filter("SapId",FilterOperator.EQ,"c24c313@logaligroup.com"),
+            new Filter("SapId",FilterOperator.EQ,this.getOwnerComponent().SapId),
             new Filter("EmployeeId",FilterOperator.EQ,EmployeeID)
           ],
           template : new sap.m.UploadCollectionItem({
